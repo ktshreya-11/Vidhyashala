@@ -1,121 +1,57 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useState, useEffect } from 'react';
+import Editor from '@monaco-editor/react';
+import { io } from 'socket.io-client';
+
+const socket = io('http://localhost:5000'); // Connecting to your backend
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [inWarRoom, setInWarRoom] = useState(false);
+  const [code, setCode] = useState("// Type your solution here...");
 
+  useEffect(() => {
+    socket.on('receive-code', (newCode) => setCode(newCode));
+  }, []);
+
+  const handleEditorChange = (value) => {
+    setCode(value);
+    socket.emit('code-change', value);
+  };
+
+  if (!inWarRoom) {
+    return (
+      <div style={{ padding: '40px', textAlign: 'center', fontFamily: 'sans-serif' }}>
+        <h1 style={{ color: '#003366' }}>VIDHYASHALA 🎓</h1>
+        <p>bridging the employability gap</p>
+        <hr />
+        <h2>Current Industry Challenges</h2>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginTop: '40px' }}>
+          {/* Your Secure FinTech Login Card */}
+          <div style={{ border: '1px solid #ddd', padding: '20px', borderRadius: '15px', width: '350px', textAlign: 'left', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
+            <h3 style={{ color: '#2e7d32' }}>1. Secure FinTech Login</h3>
+            <p><b>Goal:</b> Implement two-factor authentication.</p>
+            <button 
+              onClick={() => setInWarRoom(true)} 
+              style={{ width: '100%', padding: '10px', marginTop: '10px', cursor: 'pointer', borderRadius: '8px', border: '1px solid #ccc' }}>
+              Join Challenge
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Task 2: The Virtual War-Room (Live Editor)
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#1e1e1e' }}>
+      <div style={{ padding: '10px 20px', color: 'white', backgroundColor: '#2c3e50', display: 'flex', justifyContent: 'space-between' }}>
+        <span><b>War-Room:</b> Secure FinTech Login</span>
+        <button onClick={() => setInWarRoom(false)} style={{ background: 'red', color: 'white', border: 'none', padding: '5px 10px', cursor: 'pointer' }}>Exit</button>
+      </div>
+      <div style={{ flex: 1 }}>
+        <Editor height="100%" defaultLanguage="javascript" theme="vs-dark" value={code} onChange={handleEditorChange} />
+      </div>
+    </div>
+  );
 }
 
-export default App
+export default App;
