@@ -5,54 +5,30 @@ const cors = require('cors');
 
 const app = express();
 app.use(cors());
-app.use(express.json()); // <--- ADD THIS so the server can read your Task 3 data
+app.use(express.json()); // Essential for Task 3
 
 const server = http.createServer(app);
-const io = new Server(server, {
-    cors: { origin: "http://localhost:5173" }
-});
+const io = new Server(server, { cors: { origin: "http://localhost:5173" } });
 
-// Task 2: Real-time Collaboration Logic
+// Task 2: Collaboration Logic
 io.on('connection', (socket) => {
-    console.log('A student joined the War-Room:', socket.id);
-    socket.on('code-change', (data) => {
-        socket.broadcast.emit('receive-code', data);
-    });
-    socket.on('disconnect', () => console.log('Student left.'));
+    socket.on('code-change', (data) => socket.broadcast.emit('receive-code', data));
 });
 
-// Task 1: Industry Challenges Data
+// Task 1: Challenges
 app.get('/api/challenges', (req, res) => {
-    res.json([
-        { id: 1, title: "Secure FinTech Login", tech: "MERN Stack" },
-        { id: 2, title: "Industrial IoT Dashboard", tech: "React & Python" }
-    ]);
+    res.json([{ id: 1, title: "Secure FinTech Login", tech: "MERN Stack" }]);
 });
 
-// --- ADD TASK 3 LOGIC BELOW THIS LINE ---
-
-// Task 3: Bridge Courses (The AI Recommendations)
-const bridgeCourses = {
-  "logic_error": { 
-    title: "Logic & Algorithms 101", 
-    videoUrl: "https://www.youtube.com", 
-    desc: "Your conditional logic needs a boost! Check out this quick bridge course." 
-  },
-  "security_error": { 
-    title: "Encryption & Security Basics", 
-    videoUrl: "https://www.youtube.com",
-    desc: "Let's fix that security gap in your FinTech login." 
-  }
-};
-
-// AI Recommendation Endpoint
+// Task 3: AI Bridge Data (The Video in your Image)
 app.post('/api/recommend-bridge', (req, res) => {
-  const { errorType } = req.body;
-  // If we don't recognize the error, we give the logic course as default
-  const recommendation = bridgeCourses[errorType] || bridgeCourses["logic_error"];
-  res.json(recommendation);
+    res.json({
+        title: "Advanced JWT Authentication and PSD2 Compliance",
+        desc: "This course covers implementing secure JSON Web Tokens with proper signature verification and expiry, essential for FinTech security compliance. Understanding these principles will help resolve the 'logic_error' in your 2FA implementation.",
+        videoUrl: "https://youtube.com" 
+    });
 });
 
-// --- END OF TASK 3 LOGIC ---
+
 
 server.listen(5000, () => console.log("✅ War-Room Server live on port 5000"));
