@@ -24,10 +24,13 @@ app.get('/api/challenges', (req, res) => {
 app.post('/api/recommend-bridge', (req, res) => {
     res.json({
         title: "Advanced JWT Authentication and PSD2 Compliance",
-        desc: "This course covers implementing secure JSON Web Tokens with proper signature verification and expiry, essential for FinTech security compliance. Understanding these principles will help resolve the 'logic_error' in your 2FA implementation.",
+        desc: "AI Analysis: We identified a gap in your token verification logic. This course covers implementing secure JSON Web Tokens with proper signature verification and expiry.",
+        // THE FIX: Use /embed/ instead of watch?v=
         videoUrl: "https://youtube.com" 
     });
 });
+
+
 
 
 

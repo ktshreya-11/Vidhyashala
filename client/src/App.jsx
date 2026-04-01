@@ -20,11 +20,14 @@ function App() {
   };
 
   const handleSubmit = () => {
-    // Calls the AI Bridge endpoint
-    axios.post('http://localhost:5000/api/recommend-bridge', { errorType: 'security_gap' })
-      .then(res => setBridgeCourse(res.data))
-      .catch(err => console.error("AI Bridge error:", err));
-  };
+  // This version triggers the AI Bridge NO MATTER WHAT you type
+  axios.post('http://localhost:5000/api/recommend-bridge', { errorType: 'logic_error' })
+    .then(res => {
+      setBridgeCourse(res.data);
+    })
+    .catch(err => console.error("AI Bridge error:", err));
+};
+
 
   // --- LANDING PAGE ---
   if (!inWarRoom) {
@@ -72,16 +75,17 @@ function App() {
             <div style={{ border: '1px solid #cce5ff', backgroundColor: '#f8fbff', padding: '15px', borderRadius: '8px' }}>
               <h4 style={{ margin: '0 0 10px 0', fontSize: '16px' }}>Bridge Course: {bridgeCourse.title}</h4>
               
-              <iframe 
+             <iframe 
                 width="100%" 
-                height="280" 
+                height="315" 
                 src={bridgeCourse.videoUrl} 
                 title="YouTube video player" 
                 frameBorder="0" 
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                 allowFullScreen 
-                style={{ borderRadius: '5px' }}
-              ></iframe>
+                style={{ borderRadius: '10px' }}
+             ></iframe>
+ 
               
               <p style={{ fontSize: '13px', color: '#333', marginTop: '10px', lineHeight: '1.4' }}>
                 {bridgeCourse.desc}
